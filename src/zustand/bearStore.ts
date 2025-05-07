@@ -24,12 +24,12 @@ export const useBearStore = create<TBearStoreState>()(
                     set({ bears: 0 }, false, 'removeAllBears'),
             }),
             {
-                name: 'BearStore', // 👈 Tên trong Redux DevTools
+                name: 'BearStore', // Tên trong Redux DevTools
             }
         ),
         {
-            name: 'bear-storage', // 👈 key lưu trong localStorage
-            partialize: (state) => ({ bears: state.bears }), // 👈 chỉ lưu dữ liệu, không lưu hàm
+            name: 'bear-storage', // key lưu trong localStorage
+            partialize: (state) => ({ bears: state.bears }), // chỉ lưu dữ liệu, không lưu hàm
         }
     )
 );
