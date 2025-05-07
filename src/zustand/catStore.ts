@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { createSelectors } from "../utils/createSelectors";
+import {devtools} from "zustand/middleware";
 
 type TCatStoreState = {
     cats: {
@@ -16,30 +17,38 @@ type TCatStoreState = {
 export const useCatStore = createSelectors(create<
     TCatStoreState,
     [
-        ["zustand/immer", never],
+        ["zustand/devtools", never],
+        ["zustand/immer", never]
     ]
 >(
-    immer((set, get) => ({
-        cats: {
-            bigCats: 0,
-            smallCats: 0,
-        },
+    devtools(
+        immer((set, get) => ({
+            cats: {
+                bigCats: 0,
+                smallCats: 0,
+            },
 
-        increaseBigCats: () => {
-            set((state) => {
-                state.cats.bigCats++; // Sử dụng immer để thay đổi state
-            });
-        },
+            increaseBigCats: () => {
+                set((state) => {
+                    state.cats.bigCats++;
+                }, false, 'increaseBigCats');
+            },
 
-        increaseSmallCats: () => {
-            set((state) => {
-                state.cats.smallCats++; // Sử dụng immer để thay đổi state
-            });
-        },
+            increaseSmallCats: () => {
+                set((state) => {
+                    state.cats.smallCats++;
+                }, false, 'increaseSmallCats');
+            },
 
-        summary: () => {
-            const total = get().cats.bigCats + get().cats.smallCats;
-            return `There are ${total} cats in total. `;
-        },
-    }))
+            summary: () => {
+                const total = get().cats.bigCats + get().cats.smallCats;
+                return `There are ${total} cats in total.`;
+            },
+        })),
+        {
+            name: 'CatStore', // 👈 Tên hiển thị trong Redux DevTools
+        }
+    )
 ));
+
+

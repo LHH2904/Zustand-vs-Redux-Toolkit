@@ -1,12 +1,11 @@
-import {useCatStore} from "../../zustand/catStore";
+import { useCatStore } from "../../zustand/catStore";
+
 
 const CatController = () => {
-    // const {
-    //     increaseBigCats,
-    //     increaseSmallCats,
-    // } = useCatStore();
     const increaseBigCats = useCatStore.use.increaseBigCats();
-    const increaseSmallCats = useCatStore.use.increaseSmallCats();
+    const increaseSmallCats = useCatStore.use.increaseBigCats();
+
+
 
     return (
         <div className="box">
