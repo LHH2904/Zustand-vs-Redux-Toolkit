@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-import { createSelectors } from "../utils/createSelectors";
-import {devtools} from "zustand/middleware";
+import {create} from 'zustand';
+import {immer} from 'zustand/middleware/immer';
+import {createSelectors} from "../utils/createSelectors";
+import {devtools, persist} from "zustand/middleware";
 
 type TCatStoreState = {
     cats: {
@@ -17,36 +17,43 @@ type TCatStoreState = {
 export const useCatStore = createSelectors(create<
     TCatStoreState,
     [
+        ['zustand/persist', unknown],
         ["zustand/devtools", never],
         ["zustand/immer", never]
     ]
 >(
-    devtools(
-        immer((set, get) => ({
-            cats: {
-                bigCats: 0,
-                smallCats: 0,
-            },
+    persist(
+        devtools(
+            immer((set, get) => ({
+                cats: {
+                    bigCats: 0,
+                    smallCats: 0,
+                },
 
-            increaseBigCats: () => {
-                set((state) => {
-                    state.cats.bigCats++;
-                }, false, 'increaseBigCats');
-            },
+                increaseBigCats: () => {
+                    set((state) => {
+                        state.cats.bigCats++;
+                    }, false, 'increaseBigCats');
+                },
 
-            increaseSmallCats: () => {
-                set((state) => {
-                    state.cats.smallCats++;
-                }, false, 'increaseSmallCats');
-            },
+                increaseSmallCats: () => {
+                    set((state) => {
+                        state.cats.smallCats++;
+                    }, false, 'increaseSmallCats');
+                },
 
-            summary: () => {
-                const total = get().cats.bigCats + get().cats.smallCats;
-                return `There are ${total} cats in total.`;
-            },
-        })),
-        {
-            name: 'CatStore', // 👈 Tên hiển thị trong Redux DevTools
+                summary: () => {
+                    const total = get().cats.bigCats + get().cats.smallCats;
+                    return `There are ${total} cats in total.`;
+                },
+            })),
+            {
+                name: 'CatStore', // Tên hiển thị trong Redux DevTools
+            }
+        ), {
+            name: 'cat-storage', // localStorage key
+            //chỉ lưu phần cần thiết
+            partialize: (state) => ({cats: state.cats}),
         }
     )
 ));
